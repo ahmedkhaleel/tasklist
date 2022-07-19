@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
+use App\Repositories\TaskRepository;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
 
-    public function __construct()
+    public function __construct( TaskRepository $tasks )
     {
+        $this->tasks = $tasks;
+
         $this->middleware('auth');
     }
     /**
@@ -23,7 +26,7 @@ class TaskController extends Controller
     {
 
         return view('tasks.index', [
-            'tasks' => $request->user()->tasks()->orderBy('created_at', 'desc')->get(),
+            'tasks' => $this->tasks->forUser($request->user()),
         ]);
     }
 
