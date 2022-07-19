@@ -5,17 +5,26 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+
+        return view('tasks.index', [
+            'tasks' => $request->user()->tasks()->orderBy('created_at', 'desc')->get(),
+        ]);
     }
 
     /**
@@ -34,9 +43,17 @@ class TaskController extends Controller
      * @param  \App\Http\Requests\StoreTaskRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTaskRequest $request)
+    public function store(Request $request)
     {
-        //
+       $request->validate([
+            'name' => 'required',
+        ]);
+        $task = Task::create([
+            'name' => $request->name,
+            'user_id' => auth()->id()
+        ]);
+        $task->save();
+        return redirect()->route('tasks');
     }
 
     /**
