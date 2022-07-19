@@ -6,6 +6,7 @@
     </x-slot>
 
     <div class="py-12">
+
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
@@ -28,12 +29,23 @@
         </div>
     </div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 p-4">
+            @if (session('success'))
+                <div class="bg-red-400 text-gray-50 p-4 rounded">
+                    {{ session()->get('success') }}
+                </div>
+
+            @endif
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                    list of tasks:
                     @if(count($tasks) > 0)
                         @foreach($tasks as $task)
-                            <li class="  ">{{ $task->name }}</li>
+                            <div class="flex m-4 ">
+                                <li class="px-4  ">{{ $task->name }}</li>
+                                <button class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4  rounded text-center">
+                                    <a href="{{ route('tasks.destroy', $task->id) }}">Delete</a>
+                                </button>
+                            </div>
                         @endforeach
                     @else
                         <p>No tasks found</p>

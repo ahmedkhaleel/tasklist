@@ -99,8 +99,11 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Task $task)
+    public function destroy(Request $request,Task $task)
     {
-        //
+       $this->authorize('delete',$task);
+        $task->delete();
+        return redirect()->route('tasks')->with('success', 'Task deleted successfully');
+
     }
 }
